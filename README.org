@@ -1,0 +1,9 @@
+This C++ code and python interface implements the algorithm described
+in the following paper.
+
+Vargovich J and Hocking TD. Linear time dynamic programming for
+computing breakpoints in the regularization path of models selected
+from a finite set.
+- Published in [[https://amstat.tandfonline.com/doi/full/10.1080/10618600.2021.2000422][Journal of Computational and Graphical Statistics]]
+  (2021).
+- Preprint [[https://arxiv.org/abs/2003.02808][arXiv:2003.02808]].
