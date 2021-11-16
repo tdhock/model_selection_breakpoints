@@ -73,6 +73,6 @@ int modelSelectionFwd
     b[M] = lambda;
     K[M] = t;
   }
-  *n_models = M; 
+  *n_models = M+1; 
   return 0;
 }

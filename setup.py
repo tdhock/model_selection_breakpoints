@@ -14,7 +14,6 @@ setuptools.setup(
     long_description_content_type="text/plain",
     url="https://github.com/tdhock/model_selection_breakpoints",
     install_requires=['numpy'],
-    packages=['.'],
     extras_require={
         'test': ['pytest']
     },
@@ -24,7 +23,7 @@ setuptools.setup(
     classifiers=[
         "Programming Language :: Python :: 3.8",
         "Programming Language :: C",
-        "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Topic :: Scientific/Engineering :: Bio-Informatics",
     ],
     python_requires='>=3.6',
