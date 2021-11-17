@@ -15,3 +15,18 @@ print(pd.DataFrame({
     "complexity":complexity[i],
 }))
 
+## PeakSegDisk example data.
+model_summary = pd.read_csv("Mono27ac_model_summary.csv")
+iteration = 3
+iteration_df = model_summary.loc[
+    model_summary["iteration"] <= iteration
+].sort_values(by="penalty", ascending=False)
+A = {k:iteration_df[k].to_numpy("double") for k in ("total.loss", "peaks")}
+result = msb.interface(A["total.loss"], A["peaks"])
+n_models = result.pop("n_models")
+result_df = pd.DataFrame(result)[:n_models]
+i = result_df["index"]
+max_penalty = result_df["penalty"]
+out_df = iteration_df.iloc[i]
+out_df["max_penalty"] = np.array(max_penalty, "double")
+out_df["min_penalty"] = np.array(list(max_penalty[1:])+[0], "double")
