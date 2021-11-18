@@ -1,16 +1,26 @@
-This C code and python interface implements the algorithm described
-in the following paper.
+In supervised optimal changepoint detection, we want to learn a function for predicting penalty values with min label error.
+This C code and python interface implements efficient search for penalty values with min label error.
 
-Vargovich J and Hocking TD. Linear time dynamic programming for
+** Usage
+
+The Python min_label_error function implements computation of 
+- (1) current estimate of target interval of log(penalty) values with minimum error. Useful to construct output/target/label matrix when learning a penalty function via interval regression.
+- (2) set of penalties which would be interesting to compute next for trying to find the target interval. This set will be empty if the target interval has already been determined, so for learning you can repeatedly call this function and compute penalties and it will eventually stop. 
+
+As input it requires a pandas.DataFrame with one row for each model/penalty that has already been computed, and columns:
+- penalty: non-negative real penalty value used as input to optimal changepoint algorithm, larger values result in fewer changepoints. 
+- peaks: non-negative integer, number of peaks returned by optimal changepoint algorithm.
+- total.loss: real, total un-penalized Poisson loss summed over all data points. peaks and total.loss are typically computed via [[https://github.com/tdhock/PeakSegDisk][PeakSegDisk]].
+- fp, fn: non-negative integer, number of false positive/negative label errors. Typically computed via [[https://github.com/tdhock/PeakError][PeakError]].
+- possible.fp, possible.fn: non-negative integer, number of possible false positive/negative label errors (should be constant over all rows). 
+
+** Related work
+The algorithm for computing the breakpoints in the model selection function (and the candidates for next penalty to compute in min_label_error) comes from penaltyLearning::modelSelection in R, https://github.com/tdhock/penaltyLearning
+Citation: Vargovich J and Hocking TD. Linear time dynamic programming for
 computing breakpoints in the regularization path of models selected
 from a finite set.
 - Published in [[https://amstat.tandfonline.com/doi/full/10.1080/10618600.2021.2000422][Journal of Computational and Graphical Statistics]]
   (2021).
 - Preprint [[https://arxiv.org/abs/2003.02808][arXiv:2003.02808]].
 
-** Related work
-
-The Python min_label_error function implements computation of 
-- (1) current estimate of target interval of log(penalty) values with minimum error. Useful to construct output/target/label matrix when learning a penalty function via interval regression.
-- (2) set of penalties which would be interesting to compute next for trying to find the target interval. This set will be empty if the target interval has already been determined, so for learning you can repeatedly call this function and compute penalties and it will eventually stop. 
-- These algorithms should be the same as PeakSegPipeline::problem.target in R, https://github.com/tdhock/PeakSegPipeline/blob/master/R/PeakSegFPOP.R (research paper with details of these algorithms in progress).
+The min_label_error logic should be the same as PeakSegPipeline::problem.target in R, https://github.com/tdhock/PeakSegPipeline/blob/master/R/PeakSegFPOP.R (research paper with details of this algorithm in progress).
