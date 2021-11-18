@@ -16,12 +16,8 @@ int modelSelectionFwd
 // This is Algorithm 1 from "Linear time dynamic programming for the
 // exact path of optimal models selected from a finite set." Argument
 // names in this C code are consistent with the variable names /
-// pseudocode in the paper. This file uses the .cpp extension so that
-// it interfaces easily with R and the other compiled code in this
-// package, but since it is just standard C you should be able to copy
-// it and use in other contexts with a standard C compiler. All
-// arguments below are pointers to memory which should be
-// pre-allocated before calling this function.
+// pseudocode in the paper. All arguments below are pointers to memory
+// which should be pre-allocated before calling this function.
 (const double *L, //Input[N]: decreasing loss values.
  const double *complexity_vec,  //Input[N]:
  // increasing complexity values. In the paper this is fixed as

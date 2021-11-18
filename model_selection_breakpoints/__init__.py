@@ -6,7 +6,7 @@ def min_label_error(input_df):
     """Compute penalties which will help us find minimum label error.
 
     input_df should be a pandas.DataFrame with columns peaks,
-    total.loss, penalty, fp, possible.fp, fn, possible.fn,
+    total.loss, penalty, fp, possible.fp, fn, possible.fn.
 
     """
     max_penalty_rows_list = []
