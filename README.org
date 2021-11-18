@@ -1,6 +1,14 @@
 In supervised optimal changepoint detection, we want to learn a function for predicting penalty values with min label error.
 This C code and python interface implements efficient search for penalty values with min label error.
 
+** Installation
+
+#+begin_src shell
+git clone https://github.com/tdhock/model_selection_breakpoints
+cd model_selection_breakpoints
+python setup.py install
+#+end_src
+
 ** Usage
 
 The Python min_label_error function implements computation of 
@@ -13,6 +21,45 @@ As input it requires a pandas.DataFrame with one row for each model/penalty that
 - total.loss: real, total un-penalized Poisson loss summed over all data points. peaks and total.loss are typically computed via [[https://github.com/tdhock/PeakSegDisk][PeakSegDisk]].
 - fp, fn: non-negative integer, number of false positive/negative label errors. Typically computed via [[https://github.com/tdhock/PeakError][PeakError]].
 - possible.fp, possible.fn: non-negative integer, number of possible false positive/negative label errors (should be constant over all rows). 
+
+#+begin_src python
+>>> import pandas as pd
+>>> model_summary = pd.read_csv("Mono27ac_model_summary.csv")
+>>> iteration = 3
+>>> iteration_df = model_summary.loc[ model_summary["iteration"] <= iteration ]
+>>> iteration_df
+    iteration      penalty     total.loss  peaks  fp  possible.fp  fn  possible.fn
+0           1     0.000000 -130227.291412   3199   5            6   0            2
+1           2   157.994737  -62199.931055    224   5            6   0            2
+9           3  1952.668769    2640.127900     17   0            6   0            2
+15          1          inf  375197.873304      0   0            6   2            2
+#+end_src
+
+A DataFrame such as the one shown above can be used as input to the
+min_label_error_function:
+
+#+begin_src python
+>>> from model_selection_breakpoints import min_label_error
+>>> result_dict = min_label_error(iteration_df)
+/home/tdhock/projects/PeakLearner/venv/lib/python3.7/site-packages/pandas/core/arraylike.py:358: RuntimeWarning: divide by zero encountered in log
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+>>> print(result_dict)
+{'new_penalties': {313.23699978625376, 21915.161494365995}, 
+ 'target_log_penalty': {'min': 5.746960091833591, 'max': 9.994933981950375}}
+#+end_src
+
+The result of min_label_error is a dict with two elements.
+- new_penalties: a set of penalty values that can be computed in order
+  to get a better approximation of the target interval. This set will
+  be empty if the target interval has already been computed.
+- target_log_penalty: a dict with keys min/max that give the current
+  estimate of the target interval, in units of log(penalty).
+
+If you repeatedly call the min_label_error function and compute the
+optimal changepoint models with the given penalties, then you will
+eventually stop, usually after ~10-20 iterations and ~30-40 penalties
+(even for very large data sets with many peaks and labels). For a
+demonstration see [[https://github.com/tdhock/PeakSegPipeline-paper/blob/master/figure-approx-target.png][this figure]].
 
 ** Related work
 The algorithm for computing the breakpoints in the model selection function (and the candidates for next penalty to compute in min_label_error) comes from penaltyLearning::modelSelection in R, https://github.com/tdhock/penaltyLearning
