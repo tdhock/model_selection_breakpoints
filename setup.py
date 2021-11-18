@@ -17,7 +17,7 @@ setuptools.setup(
     extras_require={
         'test': ['pytest']
     },
-    ext_modules=[setuptools.Extension('model_selection_breakpoints',
+    ext_modules=[setuptools.Extension('model_selection_breakpoints_c',
                                       ['interface.c', 'modelSelectionFwd.c'],
                                       include_dirs=[numpy.get_include()])],
     classifiers=[

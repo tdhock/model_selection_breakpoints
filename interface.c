@@ -76,7 +76,7 @@ static struct PyModuleDef moduleDef =
 
 
 PyMODINIT_FUNC
-PyInit_model_selection_breakpoints(void)
+PyInit_model_selection_breakpoints_c(void)
 {
   PyObject *module;
   module = PyModule_Create(&moduleDef);
