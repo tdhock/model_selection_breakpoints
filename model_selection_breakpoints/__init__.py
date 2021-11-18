@@ -1,5 +1,7 @@
 import pandas as pd
+import numpy as np
 import model_selection_breakpoints_c
+
 def min_label_error(input_df):
     """Compute penalties which will help us find minimum label error.
 
@@ -8,14 +10,15 @@ def min_label_error(input_df):
 
     """
     max_penalty_rows_list = []
-    loss = None
-    for peaks_value, peaks_df in input_df.groupby("peaks"):
+    prev_loss = None
+    peak_groups = input_df.sort_values(by="peaks", ascending=True).groupby("peaks")
+    for peaks_value, peaks_df in peak_groups:
         #pre-processing: for each unique value of peaks, keep only
         #the row with max penalty. Then discard models for which the total
         #loss does not decrease.
         max_pen_row = peaks_df.iloc[peaks_df.penalty.argmax()]
         loss = max_pen_row["total.loss"]
-        if loss is None or loss < prev_loss:
+        if prev_loss is None or loss < prev_loss:
             max_penalty_rows_list.append(max_pen_row)
             prev_loss = loss
     processed_df = pd.DataFrame(max_penalty_rows_list)
@@ -82,5 +85,5 @@ def min_label_error(input_df):
         stopping_candidates.intersection_update(not_done)
     return {
         "new_penalties":stopping_candidates,
-        "target_dict":target_dict,
+        "target_log_penalty":target_dict,
     }
